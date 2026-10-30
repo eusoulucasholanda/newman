@@ -123,16 +123,18 @@ p { margin: 0; }
 .intro__half--top { top: 0; }
 .intro__half--bottom { bottom: 0; }
 .intro__mark { position: absolute; left: 50%; top: calc(50% - 56px); width: min(220px, 55vw); height: auto; transform: translateX(-50%); opacity: 0; animation: introMarca .7s var(--ease) .1s forwards; }
-.intro__line { position: absolute; left: 10vw; right: 10vw; top: 50%; height: 1px; }
-.intro__line span { display: block; height: 100%; background: var(--nude); transform-origin: left; transform: scaleX(0); animation: introLinha .9s var(--ease) .35s forwards; }
-.intro__scissors { position: absolute; top: calc(50% - 15px); left: 10vw; width: 30px; height: 30px; color: var(--nude); transform: rotate(90deg); animation: introCorte .9s var(--ease) .35s forwards; }
-.intro__scissors .blade-a, .intro__scissors .blade-b { transform-origin: 32px 33px; animation: snip .18s ease-in-out .35s 5 alternate; }
+/* --p (0 a 1) vem do app.js e move a linha, a tesoura e o número juntos */
+.intro { --p: 0; }
+.intro__line { position: absolute; left: 10vw; right: 10vw; top: 50%; height: 1px; background: rgba(205, 167, 143, .14); }
+.intro__line span { display: block; height: 100%; background: var(--nude); transform-origin: left; transform: scaleX(var(--p)); }
+.intro__scissors { position: absolute; top: calc(50% - 15px); left: calc(10vw - 15px + 80vw * var(--p)); width: 30px; height: 30px; color: var(--nude); transform: rotate(90deg); }
+.intro__scissors .blade-a, .intro__scissors .blade-b { transform-origin: 32px 33px; animation: snip .18s ease-in-out infinite alternate; }
+.intro__pct { position: absolute; left: 0; right: 0; top: calc(50% + 26px); text-align: center; font-family: var(--f-titulo); font-size: clamp(2rem, 6vw, 2.8rem); line-height: 1; color: var(--nude); font-variant-numeric: tabular-nums; opacity: 0; animation: introMarca .7s var(--ease) .2s forwards; }
+.intro__pct small { margin-left: 2px; font-size: .5em; color: var(--tinta-3); }
 .intro.abre .intro__half--top { transform: translateY(-101%); }
 .intro.abre .intro__half--bottom { transform: translateY(101%); }
-.intro.abre .intro__mark, .intro.abre .intro__line, .intro.abre .intro__scissors { opacity: 0; transition: opacity .25s; }
+.intro.abre .intro__mark, .intro.abre .intro__line, .intro.abre .intro__scissors, .intro.abre .intro__pct { opacity: 0; animation: none; transition: opacity .25s; }
 @keyframes introMarca { from { opacity: 0; filter: blur(6px); } to { opacity: 1; filter: none; } }
-@keyframes introLinha { to { transform: scaleX(1); } }
-@keyframes introCorte { to { left: calc(90vw - 30px); } }
 @keyframes snip { from { transform: rotate(0); } to { transform: rotate(9deg); } }
 .intro__scissors .blade-b { animation-name: snipB; }
 @keyframes snipB { from { transform: rotate(0); } to { transform: rotate(-9deg); } }

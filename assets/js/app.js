@@ -232,21 +232,42 @@
   /* ---------- Abertura ---------- */
   var intro = $("#intro");
   function liberaHero() { document.body.classList.add("pronto"); }
-  var jaViu = false;
-  try { jaViu = sessionStorage.getItem("nm-intro") === "1"; } catch (e) { }
-  if (reduz || jaViu || !intro) {
+  // Roda em toda visita e em todo F5: conta de 0 a 100% em DURACAO ms e só fecha
+  // depois que a página terminou de carregar (segura em 99% se ainda faltar algo).
+  if (reduz || !intro) {
     if (intro) intro.remove();
     liberaHero();
   } else {
+    var DURACAO = 3200;
+    var numero = $("#intro-n");
+    var carregou = document.readyState === "complete";
+    var inicio = null;
+    window.addEventListener("load", function () { carregou = true; });
+    var mostra = function (p) {
+      intro.style.setProperty("--p", p);
+      numero.textContent = Math.round(p * 100);
+    };
     var fechaIntro = function () {
       if (!intro.isConnected || intro.classList.contains("abre")) return;
+      mostra(1);
       intro.classList.add("abre");
       liberaHero();
-      try { sessionStorage.setItem("nm-intro", "1"); } catch (e) { }
       setTimeout(function () { intro.remove(); }, 1100);
     };
-    setTimeout(fechaIntro, 1450);
-    window.addEventListener("pointerdown", fechaIntro, { once: true });
+    var passo = function (agora) {
+      if (intro.classList.contains("abre")) return;
+      if (inicio === null) inicio = agora;
+      var t = Math.min((agora - inicio) / DURACAO, 1);
+      var p = t * t * (3 - 2 * t);
+      if (t === 1 && carregou) {
+        mostra(1);
+        setTimeout(fechaIntro, 380);
+        return;
+      }
+      mostra(Math.min(p, .99));
+      requestAnimationFrame(passo);
+    };
+    requestAnimationFrame(passo);
     window.addEventListener("keydown", fechaIntro, { once: true });
   }
 
